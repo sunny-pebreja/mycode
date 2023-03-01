@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: savve-prod
+  name: savvedashboard-prod-deploy
+spec:
+  selector:
+    matchLabels:
+      app: savvedashboard-prod-deploy
+  replicas: 2
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      annotations:
+        rollingStartDate: "Tue Aug 26 09:06:38 UTC 2021"
+      labels:
+        app: savvedashboard-prod-deploy
+    spec:
+      containers:
+      - name: savvedashboard-prod-deploy
+        image: 050555314504.dkr.ecr.us-east-2.amazonaws.com/${IMAGE_REPO_NAME}:${IMAGE_TAG}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 4400
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 4400
